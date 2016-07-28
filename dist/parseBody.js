@@ -1,4 +1,10 @@
+'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -8,14 +14,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
 exports.parseBody = parseBody;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _contentType = require('content-type');
 
@@ -37,10 +36,12 @@ var _zlib = require('zlib');
 
 var _zlib2 = _interopRequireDefault(_zlib);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function parseBody(req) {
   return new Promise(function (resolve, reject) {
     // If express has already parsed a body as a keyed object, use it.
-    if (typeof req.body === 'object' && !(req.body instanceof Buffer)) {
+    if (_typeof(req.body) === 'object' && !(req.body instanceof Buffer)) {
       return resolve(req.body);
     }
 
@@ -49,7 +50,7 @@ function parseBody(req) {
       return resolve({});
     }
 
-    var typeInfo = _contentType2['default'].parse(req);
+    var typeInfo = _contentType2.default.parse(req);
 
     // If express has already parsed a body as a string, and the content-type
     // was application/graphql, parse the string body.
@@ -87,11 +88,11 @@ function jsonEncodedParser(body) {
 
     /* eslint-enable no-empty */
   }
-  throw (0, _httpErrors2['default'])(400, 'POST body sent invalid JSON.');
+  throw (0, _httpErrors2.default)(400, 'POST body sent invalid JSON.');
 }
 
 function urlEncodedParser(body) {
-  return _querystring2['default'].parse(body);
+  return _querystring2.default.parse(body);
 }
 
 function graphqlParser(body) {
@@ -115,7 +116,7 @@ function read(req, typeInfo, parseFn, resolve, reject) {
 
   // Assert charset encoding per JSON RFC 7159 sec 8.1
   if (charset.slice(0, 4) !== 'utf-') {
-    throw (0, _httpErrors2['default'])(415, 'Unsupported charset "' + charset.toUpperCase() + '".');
+    throw (0, _httpErrors2.default)(415, 'Unsupported charset "' + charset.toUpperCase() + '".');
   }
 
   // Get content-encoding (e.g. gzip)
@@ -125,9 +126,9 @@ function read(req, typeInfo, parseFn, resolve, reject) {
   var stream = decompressed(req, encoding);
 
   // Read body from stream.
-  (0, _rawBody2['default'])(stream, { encoding: charset, length: length, limit: limit }, function (err, body) {
+  (0, _rawBody2.default)(stream, { encoding: charset, length: length, limit: limit }, function (err, body) {
     if (err) {
-      return reject(err.type === 'encoding.unsupported' ? (0, _httpErrors2['default'])(415, 'Unsupported charset "' + charset.toUpperCase() + '".') : (0, _httpErrors2['default'])(400, 'Invalid body: ' + err.message + '.'));
+      return reject(err.type === 'encoding.unsupported' ? (0, _httpErrors2.default)(415, 'Unsupported charset "' + charset.toUpperCase() + '".') : (0, _httpErrors2.default)(400, 'Invalid body: ' + err.message + '.'));
     }
 
     try {
@@ -145,9 +146,9 @@ function decompressed(req, encoding) {
     case 'identity':
       return req;
     case 'deflate':
-      return req.pipe(_zlib2['default'].createInflate());
+      return req.pipe(_zlib2.default.createInflate());
     case 'gzip':
-      return req.pipe(_zlib2['default'].createGunzip());
+      return req.pipe(_zlib2.default.createGunzip());
   }
-  throw (0, _httpErrors2['default'])(415, 'Unsupported content-encoding "' + encoding + '".');
+  throw (0, _httpErrors2.default)(415, 'Unsupported content-encoding "' + encoding + '".');
 }
